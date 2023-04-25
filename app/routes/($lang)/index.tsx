@@ -11,6 +11,10 @@ import type {
 } from '@shopify/hydrogen/storefront-api-types';
 import {AnalyticsPageType} from '@shopify/hydrogen';
 
+import Posts from '~/components/Posts';
+
+import {client} from '~/lib/sanity';
+
 interface HomeSeoData {
   shop: {
     name: string;
@@ -32,6 +36,8 @@ export interface CollectionHero {
 
 export async function loader({params, context}: LoaderArgs) {
   const {language, country} = context.storefront.i18n;
+  const query = `*[_type == "page" && defined(slug.current)]`;
+  const posts = await client.fetch(query);
 
   if (
     params.lang &&
@@ -46,10 +52,11 @@ export async function loader({params, context}: LoaderArgs) {
     hero: CollectionHero;
     shop: HomeSeoData;
   }>(HOMEPAGE_SEO_QUERY, {
-    variables: {handle: 'freestyle'},
+    variables: {handle: 'frontpage'},
   });
 
   return defer({
+    posts,
     shop,
     primaryHero: hero,
     // These different queries are separated to illustrate how 3rd party content
@@ -108,6 +115,7 @@ export default function Homepage() {
     tertiaryHero,
     featuredCollections,
     featuredProducts,
+    posts,
   } = useLoaderData<typeof loader>();
 
   // TODO: skeletons vs placeholders
@@ -125,6 +133,8 @@ export default function Homepage() {
       {primaryHero && (
         <Hero {...primaryHero} height="full" top loading="eager" />
       )}
+
+      <Posts posts={posts} />
 
       {featuredProducts && (
         <Suspense>

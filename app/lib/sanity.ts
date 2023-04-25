@@ -1,0 +1,11 @@
+import {createClient} from '@sanity/client';
+import {definePreview} from '@sanity/preview-kit';
+
+// copy these from your Studio's sanity.config.ts
+export const projectId = '1fxdn3yz';
+export const dataset = 'production';
+export const apiVersion = '2023-01-01';
+export const useCdn = true;
+
+export const client = createClient({projectId, dataset, useCdn, apiVersion});
+export const usePreview = definePreview({projectId, dataset});
