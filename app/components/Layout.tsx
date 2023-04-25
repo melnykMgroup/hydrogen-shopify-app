@@ -255,7 +255,6 @@ function DesktopHeader({
   menu?: EnhancedMenu;
   title: string;
 }) {
-  console.log(menu);
   const params = useParams();
   const {y} = useWindowScroll();
   return (
